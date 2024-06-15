@@ -3,6 +3,11 @@ import Search from "./ui/Search";
 import ProductSkeleton from "./ui/Skeltons";
 import { Sort } from "./lib/definitions";
 import Body from "./ui/Body";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Ebay | Browse",
+};
 
 export default async function Home({
   searchParams,
