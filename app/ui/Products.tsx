@@ -1,4 +1,5 @@
 import { Product } from "../lib/definitions";
+import { calcDuration } from "../lib/utils";
 
 type Props = {
   items: Product[];
@@ -22,16 +23,28 @@ const Products = async ({ items }: Props) => {
               {product.title}
             </p>
           </a>
-          <span className="font-bold text-gray-900 dark:text-white">
-            $
-            {product.buyingOptions[0] == "AUCTION"
-              ? product.currentBidPrice.value
-              : product.price.value}
-          </span>
+          <div className="block text-gray-900 text-center text-sm">
+            <PriceBlock product={product} />
+          </div>
         </div>
       ))}
     </div>
   );
+
+  function PriceBlock({ product }: { product: Product }) {
+    if (product.buyingOptions[0] == "AUCTION") {
+      const duration = calcDuration(product.itemEndDate);
+      return (
+        <>
+          <div className="font-bold">$ {product.currentBidPrice.value}</div>
+          <div>Bid Count: {product.bidCount ?? 0}</div>
+          <div>{duration}</div>
+        </>
+      );
+    } else {
+      return <div className="font-bold">$ {product.price.value}</div>;
+    }
+  }
 };
 
 export default Products;

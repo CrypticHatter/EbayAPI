@@ -17,6 +17,7 @@ export type Product = {
   buyingOptions: [string];
   bidCount: number;
   currentBidPrice: { value: string };
+  itemEndDate: string;
 };
 
 export enum Buying {
