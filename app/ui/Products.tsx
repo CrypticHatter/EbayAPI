@@ -7,7 +7,7 @@ type Props = {
 
 const Products = async ({ items }: Props) => {
   return (
-    <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
       {items?.map((product) => (
         <div
           key={product.itemId}

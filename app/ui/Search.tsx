@@ -36,8 +36,8 @@ const Search = ({ placeholder }: Props) => {
   };
 
   return (
-    <div className="flex items-center mb-3">
-      <div className="me-4 block">
+    <div className="grid grid-cols-2 md:grid-cols-4 items-center gap-4 mb-3">
+      <div>
         <input
           type="text"
           onChange={(e) => handleSearch(e.target.value)}
@@ -46,7 +46,20 @@ const Search = ({ placeholder }: Props) => {
           placeholder={placeholder}
         />
       </div>
-      <div className="me-4 p-2 block ">
+      <div>
+        <label>
+          <select
+            className="block p-2 rounded-lg border focus:ring-blue-500 focus:border-blue-500 "
+            onChange={(e) => handleSelect(e.target.value)}
+          >
+            <option defaultValue={Sort.NEWLY_LISTED}>Newly listed</option>
+            <option value={Sort.ENDING_SOONEST}>Ending Soonest</option>
+            <option value={Sort.LOWEST_PRICE}>Lowest Price</option>
+            <option value={Sort.HEIGHEST_PRICE}>Heighest Price</option>
+          </select>
+        </label>
+      </div>
+      <div>
         <label>
           <input
             type="checkbox"
@@ -56,7 +69,7 @@ const Search = ({ placeholder }: Props) => {
           Buy It Now
         </label>
       </div>
-      <div className="me-4 p-2 block">
+      <div>
         <label>
           <input
             type="checkbox"
@@ -65,17 +78,6 @@ const Search = ({ placeholder }: Props) => {
             onChange={(e) => handleCheck(e.target.checked, Buying.AUCTION)}
           />
           Auctions
-        </label>
-      </div>
-      <div className="me-4 p-2 block">
-        <label>
-          <select
-            className="block p-2 rounded-lg border focus:ring-blue-500 focus:border-blue-500 "
-            onChange={(e) => handleSelect(e.target.value)}
-          >
-            <option defaultValue={Sort.NEWLY_LISTED}>Newly listed</option>
-            <option value={Sort.ENDING_SOONEST}>Ending Soonest</option>
-          </select>
         </label>
       </div>
     </div>

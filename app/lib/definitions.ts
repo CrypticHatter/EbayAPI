@@ -28,4 +28,6 @@ export enum Buying {
 export enum Sort {
   ENDING_SOONEST = "endingSoonest",
   NEWLY_LISTED = "newlyListed",
+  LOWEST_PRICE = "price",
+  HEIGHEST_PRICE = "-price",
 }
