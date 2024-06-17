@@ -23,7 +23,7 @@ const Products = async ({ items }: Props) => {
               {product.title}
             </p>
           </a>
-          <div className="block text-gray-900 text-center text-sm">
+          <div className="block text-gray-900 dark:text-white text-center text-sm">
             <PriceBlock product={product} />
           </div>
         </div>
