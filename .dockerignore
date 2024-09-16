@@ -1,0 +1,5 @@
+./node_modules
+Dockerfile
+.env
+.next
+.env.local

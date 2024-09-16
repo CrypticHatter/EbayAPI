@@ -27,7 +27,7 @@ export default async function Home({
   const auction = searchParams?.auction === "true" ? true : false || false;
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-4">
+    <div className="flex min-h-screen flex-col items-center justify-between p-4">
       <Search placeholder="Search" />
       <Suspense
         key={query + currentPage + sort + buyItNow + auction}
@@ -41,6 +41,6 @@ export default async function Home({
           currentPage={currentPage}
         />
       </Suspense>
-    </main>
+    </div>
   );
 }
