@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import UserCard from "../components/UserCard";
 
-function client() {
+function Client() {
   const { data: session } = useSession({
     required: true,
     onUnauthenticated() {
@@ -19,4 +19,4 @@ function client() {
   );
 }
 
-export default client;
+export default Client;

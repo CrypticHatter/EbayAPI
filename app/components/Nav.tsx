@@ -5,7 +5,7 @@ import { options } from "../api/auth/[...nextauth]/options";
 
 type Props = {};
 
-const Nav = async (props: Props) => {
+const Nav = async () => {
   const session = await getServerSession(options);
   return (
     <header className="bg-gray-600 text-gray-100">
