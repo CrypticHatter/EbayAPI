@@ -5,11 +5,15 @@ import { ErrorMsg, Product, Sort, User } from "./definitions";
 export async function authenticate(): Promise<User | ErrorMsg | null> {
   let date = new Date();
   const user = await getAuthentication();
+  console.log("User from DB:", user);
   if (user === null || user === undefined) {
+    console.log("No user found, setting authentication");
     return await setAuthentication();
   } else if ("accessToken" in user && date > user.expiredAt) {
+    console.log("Token expired, refreshing");
     return await setAuthentication(true);
   }
+  console.log("Using existing token");
   return user;
 }
 
@@ -21,8 +25,10 @@ export async function setAuthentication(del: boolean = false) {
       clientId: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
     });
+    console.log("Getting eBay application token");
     const response = await ebayAuthToken.getApplicationToken("PRODUCTION");
     const data = await JSON.parse(response);
+    console.log("eBay token response:", data);
     let date = new Date();
     date.setSeconds(data.expires_in);
 
@@ -42,6 +48,7 @@ export async function setAuthentication(del: boolean = false) {
       },
     });
   } catch (error) {
+    console.error("Error in setAuthentication:", error);
     return { message: "database error:" + error };
   }
 }
@@ -90,10 +97,10 @@ export async function fetchEbayProducts(
     if (sort) params.set("sort", sort);
 
     //filter
-    let filter = "sellers:{pc_pirate|bblivingston83}";
-    if (buyItNow) filter += ",buyingOptions:{FIXED_PRICE}";
-    else if (auction) filter += ",buyingOptions:{AUCTION}";
-    else filter += ",buyingOptions:{FIXED_PRICE|AUCTION}";
+    let filter = "";
+    if (buyItNow) filter += "buyingOptions:{FIXED_PRICE}";
+    else if (auction) filter += "buyingOptions:{AUCTION}";
+    else filter += "buyingOptions:{FIXED_PRICE|AUCTION}";
     params.set("filter", filter);
 
     const response = await fetch(
@@ -107,7 +114,9 @@ export async function fetchEbayProducts(
         },
       }
     );
+    console.log("eBay API response status:", response.status);
     const products = await response.json();
+    console.log("eBay API response:", products);
 
     return {
       items: products.itemSummaries,
