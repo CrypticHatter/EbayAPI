@@ -114,6 +114,7 @@ export async function fetchEbayProducts(
       totalPages: Math.ceil(products.total / limit),
     };
   } catch (error) {
+    console.error("Error fetching products:", error);
     throw new Error("Failed to fetch products.");
   }
 }
