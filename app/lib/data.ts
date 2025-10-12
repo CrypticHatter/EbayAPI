@@ -85,7 +85,7 @@ export async function fetchEbayProducts(
       throw new Error("Authentication Failed");
     const limit = 24;
     const offset = (currentPage - 1) * 24;
-    const catId = 64482;
+    const catId = 4196;
 
     const params = new URLSearchParams();
 
@@ -114,13 +114,19 @@ export async function fetchEbayProducts(
         },
       }
     );
-    console.log("eBay API response status:", response.status);
-    const products = await response.json();
-    console.log("eBay API response:", products);
 
+    const products = await response.json();
+    
+    // Limit total pages to prevent UI issues with very large datasets
+    const maxReasonablePages = 1000; // Allow up to 1000 pages (24,000 items)
+    const calculatedPages = Math.ceil(products.total / limit);
+    const totalPages = Math.min(calculatedPages, maxReasonablePages);
+    
     return {
       items: products.itemSummaries,
-      totalPages: Math.ceil(products.total / limit),
+      totalPages: totalPages,
+      actualTotal: products.total, // Keep the actual total for informational purposes
+      limit: limit, // Return the limit so other components can use it
     };
   } catch (error) {
     console.error("Error fetching products:", error);

@@ -1,14 +1,17 @@
 "use client";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { generatePagination } from "../lib/utils";
 import clsx from "clsx";
 import Link from "next/link";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/16/solid";
+import { useState } from "react";
 
 const Pagination = ({ totalPages }: { totalPages: number }) => {
   const pathName = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const currentPage = Number(searchParams.get("page")) || 1;
+  const [jumpToPage, setJumpToPage] = useState("");
 
   const createPageURL = (pageNumber: number | string) => {
     const params = new URLSearchParams(searchParams);
@@ -16,43 +19,82 @@ const Pagination = ({ totalPages }: { totalPages: number }) => {
     return `${pathName}?${params.toString()}`;
   };
 
+  const handleJumpToPage = (e: React.FormEvent) => {
+    e.preventDefault();
+    const pageNum = parseInt(jumpToPage);
+    if (pageNum && pageNum >= 1 && pageNum <= totalPages) {
+      router.push(createPageURL(pageNum));
+      setJumpToPage("");
+    }
+  };
+
   const allPages = generatePagination(currentPage, totalPages);
 
   return (
     <>
-      <div className="inline-flex">
-        <PaginationArrow
-          direction="left"
-          href={createPageURL(currentPage - 1)}
-          isDisabled={currentPage <= 1}
-        />
+      <div className="flex flex-col items-center space-y-3">
+        {/* Page info */}
+        <div className="text-sm text-gray-600">
+          Page {currentPage.toLocaleString()} of {totalPages.toLocaleString()}
+        </div>
+        
+        {/* Pagination controls */}
+        <div className="inline-flex">
+          <PaginationArrow
+            direction="left"
+            href={createPageURL(currentPage - 1)}
+            isDisabled={currentPage <= 1}
+          />
 
-        <div className="flex -space-x-px">
-          {allPages.map((page, index) => {
-            let position: "first" | "last" | "single" | "middle" | undefined;
+          <div className="flex -space-x-px">
+            {allPages.map((page, index) => {
+              let position: "first" | "last" | "single" | "middle" | undefined;
 
-            if (index === 0) position = "first";
-            if (index === allPages.length - 1) position = "last";
-            if (allPages.length === 1) position = "single";
-            if (page === "...") position = "middle";
+              if (index === 0) position = "first";
+              if (index === allPages.length - 1) position = "last";
+              if (allPages.length === 1) position = "single";
+              if (page === "...") position = "middle";
 
-            return (
-              <PaginationNumber
-                key={page}
-                href={createPageURL(page)}
-                page={page}
-                position={position}
-                isActive={currentPage === page}
-              />
-            );
-          })}
+              return (
+                <PaginationNumber
+                  key={page}
+                  href={createPageURL(page)}
+                  page={page}
+                  position={position}
+                  isActive={currentPage === page}
+                />
+              );
+            })}
+          </div>
+
+          <PaginationArrow
+            direction="right"
+            href={createPageURL(currentPage + 1)}
+            isDisabled={currentPage >= totalPages}
+          />
         </div>
 
-        <PaginationArrow
-          direction="right"
-          href={createPageURL(currentPage + 1)}
-          isDisabled={currentPage >= totalPages}
-        />
+        {/* Jump to page - only show if there are many pages */}
+        {totalPages > 10 && (
+          <form onSubmit={handleJumpToPage} className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">Jump to page:</span>
+            <input
+              type="number"
+              min="1"
+              max={totalPages}
+              value={jumpToPage}
+              onChange={(e) => setJumpToPage(e.target.value)}
+              className="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Page"
+            />
+            <button
+              type="submit"
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              Go
+            </button>
+          </form>
+        )}
       </div>
     </>
   );

@@ -19,12 +19,26 @@ export default async function Main({
   buyItNow,
   auction,
 }: Props) {
-  const { items, totalPages }: { items: Product[]; totalPages: number } =
-    await fetchEbayProducts(currentPage, query, sort, buyItNow, auction);
+  const { items, totalPages, actualTotal, limit }: { 
+    items: Product[]; 
+    totalPages: number; 
+    actualTotal?: number;
+    limit: number;
+  } = await fetchEbayProducts(currentPage, query, sort, buyItNow, auction);
+  
+  const maxDisplayableItems = totalPages * limit;
+  const hasMoreResults = actualTotal && actualTotal > maxDisplayableItems;
+  
   return (
     <>
       <Products items={items} />
-      <div className="mt-5 flex w-full justify-center">
+      <div className="mt-5 flex w-full flex-col items-center">
+        {hasMoreResults && (
+          <div className="mb-3 text-sm text-gray-600">
+            Showing {maxDisplayableItems.toLocaleString()} of {actualTotal.toLocaleString()} results. 
+            Use more specific search terms to narrow down results.
+          </div>
+        )}
         <Pagination totalPages={totalPages} />
       </div>
     </>
